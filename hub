@@ -4,7 +4,7 @@ if game.PlaceId == 11468034852 then
 end
 -- Ouwigahara
 if game.PlaceId == 11468075017 then
-    loadstring(game:HttpGet("https://pastebin.com/raw/XJaqSD3s"))() 
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/venok1ngs/thing/main/dungeon"))() 
     loadstring(game:HttpGet("https://pastebin.com/raw/B5DMhTNB"))()
 end
 -- Map2
