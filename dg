@@ -1,0 +1,17 @@
+-- Mugen Train
+if game.PlaceId == 11468034852 then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/xyzYuuki/pjs/main/Mugen"))()
+end
+-- Ouwigahara
+if game.PlaceId == 11468075017 then
+    loadstring(game:HttpGet("https://pastebin.com/raw/XJaqSD3s"))() 
+    loadstring(game:HttpGet("https://pastebin.com/raw/B5DMhTNB"))()
+end
+-- Map2
+if game.PlaceId == 13881804983 or game.PlaceId == 13883059853  then
+    loadstring(game:HttpGet("https://pastebin.com/raw/Dxi3QyuE"))()
+end
+--Mapa1
+if game.PlaceId == 13883279773 or game.PlaceId == 6152116144 then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/xyzYuuki/pjs/main/Map1"))()
+end
