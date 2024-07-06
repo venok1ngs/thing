@@ -1584,7 +1584,7 @@ Arrow:AddToggle('GKAareroWeeWez', {
 		running = state 
 
 		if running then
-			while running do
+			while running and task.wait() do
 				local success, error = pcall(function()
 					local hitCounter = {} 
 
@@ -1619,15 +1619,11 @@ Arrow:AddToggle('GKAareroWeeWez', {
 
 									if humanoid.Health > minHealth then
 										local remaining_percentage = ((humanoid.Health - minHealth) / possibleDamage) * 100
-										local serverSidedamage = CalculateDamageByPercentage(possibleDamage,remaining_percentage)
+										Handle_Initiate_S:FireServer("Change_Value", bambooData, remaining_percentage + 10)
+										task.wait(0.25)
+										Handle_Initiate_S_:InvokeServer("arrow_knock_back_damage", game.Players.LocalPlayer.Character, v.HumanoidRootPart.CFrame, v, 500, 500)
 
-										if humanoid.Health > serverSidedamage then
-											Handle_Initiate_S:FireServer("Change_Value", bambooData, remaining_percentage)
-											task.wait(0.25)
-											Handle_Initiate_S_:InvokeServer("arrow_knock_back_damage", game.Players.LocalPlayer.Character, v.HumanoidRootPart.CFrame, v, 500, 500)
-
-											hitCounter[modelId] = hitCounter[modelId] + 1
-										end
+										hitCounter[modelId] = hitCounter[modelId] + 1
 									end
 								end
 
