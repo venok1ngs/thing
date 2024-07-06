@@ -1575,16 +1575,17 @@ Arrow:AddToggle('GKAareroWeeW', {
 		end
 	end
 })
-
+--------------------------------------------------------------------------
+local running2 = false
 Arrow:AddToggle('GKAareroWeeWez', {
 	Text = 'LowLife GKA',
 	Default = false,
 	Tooltip = 'You need to use nezuko bamboo',
 	Callback = function(state)
-		running = state 
+		running2 = state 
 
-		if running then
-			while running and task.wait() do
+		if running2 then
+			while running2 and task.wait() do
 				local success, error = pcall(function()
 					local hitCounter = {} 
 
@@ -1599,35 +1600,15 @@ Arrow:AddToggle('GKAareroWeeWez', {
 
 							if hitCounter[modelId] < 2 then
 								local humanoid = v:FindFirstChildOfClass("Humanoid") :: Humanoid
-								local npc_minimum_life_percent = 25
-								local possibleDamage = 711
-
-
-								local bambooData = game.ReplicatedStorage.Player_Data:WaitForChild(game.Players.LocalPlayer.Name):WaitForChild("Custom_Properties"):WaitForChild("Nezuko_pacifier_stuff"):WaitForChild("Damage_Nullifier")
-								local function CalculateDamageByPercentage(damage, percentage)
-									return damage * (percentage / 100)
-								end
-
-								local function CalculateMinHealth(max_health, percentage)
-									return max_health * (percentage / 100)
-								end
-
-								if humanoid and humanoid.Health > 0 then 
+								local npc_minimum_life_percent = 0.25
+								local npc_diference_health = humanoid.Health/humanoid.MaxHealth
+								
+								if humanoid and humanoid.Health > 0 and npc_diference_health > npc_minimum_life_percent then 
 									local Handle_Initiate_S_ = game.ReplicatedStorage.Remotes.To_Server.Handle_Initiate_S_
-									local Handle_Initiate_S = game.ReplicatedStorage.Remotes.To_Server.Handle_Initiate_S
-									local minHealth = CalculateMinHealth(humanoid.MaxHealth, npc_minimum_life_percent)
-
-									if humanoid.Health > minHealth then
-										local remaining_percentage = ((humanoid.Health - minHealth) / possibleDamage) * 100
-										Handle_Initiate_S:FireServer("Change_Value", bambooData, remaining_percentage + 10)
-										task.wait(0.25)
-										Handle_Initiate_S_:InvokeServer("arrow_knock_back_damage", game.Players.LocalPlayer.Character, v.HumanoidRootPart.CFrame, v, 500, 500)
-
+										Handle_Initiate_S_:InvokeServer("arrow_knock_back_damage", game.Players.LocalPlayer.Character, v.HumanoidRootPart.CFrame, v, nil, nil)
 										hitCounter[modelId] = hitCounter[modelId] + 1
 									end
 								end
-
-
 							end
 
 							local hitCount = 0
@@ -1637,7 +1618,61 @@ Arrow:AddToggle('GKAareroWeeWez', {
 							if hitCount >= 2 then
 								break 
 							end
-						end
+					end
+				end)
+
+				if not success then
+					print("An error occurred:", error)
+				end
+
+				wait()
+			end
+		end
+	end
+})
+--------------------------------------------------------------------------
+local running3 = false
+Arrow:AddToggle('GKAareroWeeWez', {
+	Text = 'LowLife2 GKA',
+	Default = false,
+	Tooltip = 'You need to use nezuko bamboo',
+	Callback = function(state)
+		running3 = state 
+
+		if running3 then
+			while running3 and task.wait() do
+				local success, error = pcall(function()
+					local hitCounter = {} 
+
+					for i, v in next, workspace.Mobs:GetDescendants() do
+						if v:IsA("Model") and v:FindFirstChild("HumanoidRootPart") then
+							local modelId = v:GetFullName()
+
+							if not hitCounter[modelId] then
+								hitCounter[modelId] = 0
+							end
+
+
+							if hitCounter[modelId] < 2 then
+								local humanoid = v:FindFirstChildOfClass("Humanoid") :: Humanoid
+								local npc_minimum_life_percent = 0.25
+								local npc_diference_health = humanoid.Health/humanoid.MaxHealth
+								
+								if humanoid and humanoid.Health > 0 and npc_diference_health > npc_minimum_life_percent then 
+									local Handle_Initiate_S_ = game.ReplicatedStorage.Remotes.To_Server.Handle_Initiate_S_
+										Handle_Initiate_S_:InvokeServer("arrow_knock_back_damage", game.Players.LocalPlayer.Character, v.HumanoidRootPart.CFrame, v, 500, 500)
+										hitCounter[modelId] = hitCounter[modelId] + 1
+									end
+								end
+							end
+
+							local hitCount = 0
+							for _, count in pairs(hitCounter) do
+								hitCount = hitCount + count
+							end
+							if hitCount >= 2 then
+								break 
+							end
 					end
 				end)
 
