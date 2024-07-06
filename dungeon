@@ -1596,19 +1596,41 @@ Arrow:AddToggle('GKAareroWeeWez', {
 								hitCounter[modelId] = 0
 							end
 
-							
+
 							if hitCounter[modelId] < 2 then
-								local humanoid = v:FindFirstChildOfClass("Humanoid")
-								
-								local npc_minimum_life_percent = 0.25
-								local npc_life_difference = (humanoid.Health/humanoid.MaxHealth)
-								
-								if humanoid and humanoid.Health > 0 and npc_life_difference >= npc_minimum_life_percent then 
-									local Handle_Initiate_S_ = game.ReplicatedStorage.Remotes.To_Server.Handle_Initiate_S_
-									Handle_Initiate_S_:InvokeServer("arrow_knock_back_damage", game.Players.LocalPlayer.Character, v.HumanoidRootPart.CFrame, v, converted_damage, converted_damage)
-									hitCounter[modelId] = hitCounter[modelId] + 1
-								else
+								-- Localiza o humanoide do NPC
+								local humanoid = v:FindFirstChildOfClass("Humanoid") :: Humanoid
+
+								-- Define os parâmetros de dano e porcentagem mínima de vida do NPC
+								local npc_minimum_life_percent = 25
+								local possibleDamage = 726
+
+
+								local bambooData = game.ReplicatedStorage.Player_Data:WaitForChild(game.Players.LocalPlayer.Name):WaitForChild("Custom_Properties"):WaitForChild("Nezuko_pacifier_stuff"):WaitForChild("Damage_Nullifier")
+								local function CalculateDamageByPercentage(damage, percentage)
+									return damage * (percentage / 100)
 								end
+
+								local function CalculateMinHealth(max_health, percentage)
+									return max_health * (percentage / 100)
+								end
+								
+								if humanoid and humanoid.Health > 0 then 
+									local Handle_Initiate_S_ = game.ReplicatedStorage.Remotes.To_Server.Handle_Initiate_S_
+									local Handle_Initiate_S = game.ReplicatedStorage.Remotes.To_Server.Handle_Initiate_S
+									local minHealth = CalculateMinHealth(humanoid.MaxHealth, npc_minimum_life_percent)
+									
+									if humanoid.Health > minHealth then
+
+										local remaining_percentage = ((humanoid.Health - minHealth) / possibleDamage) * 100
+										Handle_Initiate_S:FireServer("Change_Value", bambooData, remaining_percentage)
+										task.wait(0.25)
+										Handle_Initiate_S_:InvokeServer("arrow_knock_back_damage", game.Players.LocalPlayer.Character, v.HumanoidRootPart.CFrame, v, 500, 500)
+
+										hitCounter[modelId] = hitCounter[modelId] + 1
+									end
+								end
+
 
 							end
 
