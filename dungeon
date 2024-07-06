@@ -1577,13 +1577,22 @@ Arrow:AddToggle('GKAareroWeeW', {
 })
 --------------------------------------------------------------------------
 local running2 = false
+local isBambooEnabled = false
+
+Arrow:AddToggle('bamboo', {
+	Text = 'Bamboo',
+	Default = false,
+	Tooltip = 'You need to use nezuko bamboo',
+	Callback = function(state)
+		isBambooEnabled = state
+	end
+})
 Arrow:AddToggle('GKAareroWeeWez', {
 	Text = 'LowLife GKA',
 	Default = false,
 	Tooltip = 'You need to use nezuko bamboo',
 	Callback = function(state)
 		running2 = state 
-
 		if running2 then
 			while running2 and task.wait() do
 				local success, error = pcall(function()
@@ -1605,7 +1614,7 @@ Arrow:AddToggle('GKAareroWeeWez', {
 								
 								if humanoid and humanoid.Health > 0 and npc_diference_health > npc_minimum_life_percent then 
 									local Handle_Initiate_S_ = game.ReplicatedStorage.Remotes.To_Server.Handle_Initiate_S_
-										Handle_Initiate_S_:InvokeServer("arrow_knock_back_damage", game.Players.LocalPlayer.Character, v.HumanoidRootPart.CFrame, v, nil, nil)
+										Handle_Initiate_S_:InvokeServer("arrow_knock_back_damage", game.Players.LocalPlayer.Character, v.HumanoidRootPart.CFrame, v, if isBambooEnabled then 500 else nil, if isBambooEnabled then 500 else nil)
 										hitCounter[modelId] = hitCounter[modelId] + 1
 									end
 								end
@@ -1631,60 +1640,7 @@ Arrow:AddToggle('GKAareroWeeWez', {
 	end
 })
 --------------------------------------------------------------------------
-local running3 = false
-Arrow:AddToggle('GKAareroWeeWez', {
-	Text = 'LowLife2 GKA',
-	Default = false,
-	Tooltip = 'You need to use nezuko bamboo',
-	Callback = function(state)
-		running3 = state 
 
-		if running3 then
-			while running3 and task.wait() do
-				local success, error = pcall(function()
-					local hitCounter = {} 
-
-					for i, v in next, workspace.Mobs:GetDescendants() do
-						if v:IsA("Model") and v:FindFirstChild("HumanoidRootPart") then
-							local modelId = v:GetFullName()
-
-							if not hitCounter[modelId] then
-								hitCounter[modelId] = 0
-							end
-
-
-							if hitCounter[modelId] < 2 then
-								local humanoid = v:FindFirstChildOfClass("Humanoid") :: Humanoid
-								local npc_minimum_life_percent = 0.25
-								local npc_diference_health = humanoid.Health/humanoid.MaxHealth
-								
-								if humanoid and humanoid.Health > 0 and npc_diference_health > npc_minimum_life_percent then 
-									local Handle_Initiate_S_ = game.ReplicatedStorage.Remotes.To_Server.Handle_Initiate_S_
-										Handle_Initiate_S_:InvokeServer("arrow_knock_back_damage", game.Players.LocalPlayer.Character, v.HumanoidRootPart.CFrame, v, 500, 500)
-										hitCounter[modelId] = hitCounter[modelId] + 1
-									end
-								end
-							end
-
-							local hitCount = 0
-							for _, count in pairs(hitCounter) do
-								hitCount = hitCount + count
-							end
-							if hitCount >= 2 then
-								break 
-							end
-					end
-				end)
-
-				if not success then
-					print("An error occurred:", error)
-				end
-
-				wait()
-			end
-		end
-	end
-})
  -- // AUTO COLLECT ORB - FARM
 
 local CoreGui = game:GetService("StarterGui")
