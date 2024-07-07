@@ -953,7 +953,7 @@ GodModes:AddToggle('GDNR', {
 
 
   spawn(function()
-   while task.wait(0.25) do
+   while task.wait() do
        if getgenv().GDNR then
            pcall(function()
                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("evasive"):FireServer()
