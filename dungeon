@@ -1590,14 +1590,14 @@ Handle_Initiate_C.OnClientEvent:Connect(function(arg1,arg2,arg3)
 		UserDMG = tonumber(arg3)
 	end
 end)
-
+local mobCounter = {}
 Arrow:AddToggle('GKAareroWeeWez', {
 	Text = 'LowLife GKA',
 	Default = false,
 	Callback = function(state)
 		running2 = state 
 		if running2 then
-			local mobCounter = {}
+			mobCounter = {}
 			
 			while running2 and task.wait() do
 				local success, error = pcall(function()
@@ -1641,7 +1641,7 @@ Arrow:AddToggle('GKAareroWeeWez', {
 									if humanoid  and humanoid.Health > 0 and npc_diference_health < percent and not mobCounter[modelId] then
 										task.spawn(function()
 											mobCounter[modelId] = true
-											task.wait(8)
+											task.wait(5)
 											mobCounter[modelId] = nil
 										end)
 									end
