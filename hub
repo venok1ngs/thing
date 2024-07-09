@@ -1,4 +1,5 @@
 -- Mugen Train
+ loadstring(game:HttpGet("https://pastebin.com/raw/e4UMA38D"))()
 if game.PlaceId == 11468034852 then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/xyzYuuki/pjs/main/Mugen"))()
 end
