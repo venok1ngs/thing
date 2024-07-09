@@ -14,5 +14,5 @@ if game.PlaceId == 13881804983 or game.PlaceId == 13883059853  then
 end
 --Mapa1
 if game.PlaceId == 13883279773 or game.PlaceId == 6152116144 then
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/xyzYuuki/pjs/main/Map1"))()
+    loadstring(game:HttpGet("https://pastebin.com/raw/WikEpSUe"))()
 end
