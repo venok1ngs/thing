@@ -683,7 +683,6 @@ end)
  
 local Miscellaneous = Tabs.Others:AddLeftGroupbox('Miscellaneous')
 local GodModes = Tabs.Others:AddRightGroupbox('God Modes')
-local Misc = Tabs.Others:AddRightGroupbox('Misc')
 local Modes = Tabs.Others:AddRightGroupbox('Modes')
 
  local LeftGroupBox = Tabs.Main:AddLeftGroupbox('Main')
@@ -1006,7 +1005,7 @@ GodModes:AddToggle('Dream', {
     end
 })
 local GettingDMG = false
-Misc:AddToggle('GetMaxDMG', {
+Miscellaneous:AddToggle('GetMaxDMG', {
     Text = 'GetMaxDMG',
     Default = false,
     Callback = function(v)
