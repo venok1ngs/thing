@@ -683,6 +683,7 @@ end)
  
 local Miscellaneous = Tabs.Others:AddLeftGroupbox('Miscellaneous')
 local GodModes = Tabs.Others:AddRightGroupbox('God Modes')
+local Misc = Tabs.Others:AddRightGroupbox('Misc')
 local Modes = Tabs.Others:AddRightGroupbox('Modes')
 
  local LeftGroupBox = Tabs.Main:AddLeftGroupbox('Main')
@@ -1002,6 +1003,14 @@ GodModes:AddToggle('Dream', {
             ToggleShockWaveEnabled = false
             toggleInvincibleDream()
         end
+    end
+})
+local GettingDMG = false
+Misc:AddToggle('GetMaxDMG', {
+    Text = 'GetMaxDMG',
+    Default = false,
+    Callback = function(v)
+	GettingDMG = v
     end
 })
 
@@ -1582,11 +1591,9 @@ local isBambooEnabled = false
 local UserDMG = 0
 
 local Handle_Initiate_C = game.ReplicatedStorage.Remotes.To_Client.Handle_Initiate_C :: RemoteEvent
-local firstHit = false
 
 Handle_Initiate_C.OnClientEvent:Connect(function(arg1,arg2,arg3)
-	if not firstHit and arg1 == 'Damage_Text' then
-		firstHit = true
+	if GettingDMG and arg1 == 'Damage_Text' then
 		UserDMG = tonumber(arg3)
 	end
 end)
