@@ -20,10 +20,6 @@ local RegisteredDMG = 0
 local Registered = false
 local IsRegistering = false
 local isTping = false
-local VIM = game:GetService('VirtualInputManager')
-VIM:SendKeyEvent(true,Enum.KeyCode.X,false,game)
-task.wait(1)
-VIM:SendKeyEvent(false,Enum.KeyCode.X,false,game)
 local CoreGui = game:GetService("StarterGui")
 
 pcall(function()
