@@ -478,10 +478,18 @@ Cache.Alerts = {
 	['HitKillOrb'] = false;
 	['InvisibleOrb'] = false;
 }
+Cache.Remove = {
+	['2xOrb'] = false;
+	['HealthOrb'] =  false;
+	['StaminaOrb'] = false;
+	['1.5xOrb'] = false;
+	['HitKillOrb'] = false;
+	['InvisibleOrb'] = false;
+}
 
 
 game.Workspace.Map.ChildAdded:Connect(function(child)
-	if child:IsA("Model") and child.Name == "DoublePoints" and Cache.Alerts['2xOrb'] then
+	if child:IsA("Model") and child.Name == "DoublePoints" and Cache.Alerts['2xOrb'] and not Cache.Remove['2xOrb'] then
 		CoreGui:SetCore("SendNotification", {
 			Title = "2x APPEAR";
 			Text = "Um 2x Dropou!";
@@ -494,8 +502,9 @@ game.Workspace.Map.ChildAdded:Connect(function(child)
 			end
 		end)
 		_2x(child)
+	else
 	end
-	if child:IsA("Model") and child.Name == "BloodMoney" and Cache.Alerts['1.5xOrb'] then
+	if child:IsA("Model") and child.Name == "BloodMoney" and Cache.Alerts['1.5xOrb'] and not Cache.Remove['1.5xOrb'] then
 		CoreGui:SetCore("SendNotification", {
 			Title = "1.5x APPEAR";
 			Text = "Um 1.5x Dropou!";
@@ -507,9 +516,9 @@ game.Workspace.Map.ChildAdded:Connect(function(child)
 				if child then child:SetAttribute('Time',i) end
 			end
 		end)
-		_1_5x(child)
+		_1_5x(child) 
 	end
-	if child:IsA("Model") and child.Name == "MobCamouflage" and Cache.Alerts['InvisibleOrb'] then
+	if child:IsA("Model") and child.Name == "MobCamouflage" and Cache.Alerts['InvisibleOrb'] and not Cache.Remove['InvisibleOrb'] then
 		CoreGui:SetCore("SendNotification", {
 			Title = "INVIS APPEAR";
 			Text = "Um INVIS Dropou!";
@@ -522,9 +531,10 @@ game.Workspace.Map.ChildAdded:Connect(function(child)
 			end
 		end)
 		_Invis(child)
+	else
 	end
 
-	if child:IsA('Model') and child.Name == 'InstaKill' and Cache.Alerts['HitKillOrb'] then
+	if child:IsA('Model') and child.Name == 'InstaKill' and Cache.Alerts['HitKillOrb'] and not Cache.Remove['HitKillOrb'] then
 		CoreGui:SetCore("SendNotification", {
 			Title = "HITKILL APPEAR";
 			Text = "Um HITKILL ORB Dropou!";
@@ -537,9 +547,10 @@ game.Workspace.Map.ChildAdded:Connect(function(child)
 			end
 		end)
 		_InstaKill(child)
+	else
 	end
 
-	if child:IsA('Model') and child.Name == 'HealthRegen' and Cache.Alerts['HealthOrb'] then
+	if child:IsA('Model') and child.Name == 'HealthRegen' and Cache.Alerts['HealthOrb'] and not Cache.Remove['HealthOrb'] then
 		CoreGui:SetCore("SendNotification", {
 			Title = "HEALTH REGEN APPEAR";
 			Text = "Um HEALTH REGEN ORB Dropou!";
@@ -552,9 +563,10 @@ game.Workspace.Map.ChildAdded:Connect(function(child)
 			end
 		end)
 		_HealthRegen(child)
+	else
 	end
 
-	if child:IsA('Model') and child.Name == 'StaminaRegen' and Cache.Alerts['StaminaOrb'] then
+	if child:IsA('Model') and child.Name == 'StaminaRegen' and Cache.Alerts['StaminaOrb'] and not Cache.Remove['StaminaOrb'] then
 		CoreGui:SetCore("SendNotification", {
 			Title = "STAMINA REGEN APPEAR";
 			Text = "Um STAMINA REGEN ORB Dropou!";
@@ -567,6 +579,7 @@ game.Workspace.Map.ChildAdded:Connect(function(child)
 			end
 		end)
 		_StaminaRegen(child)
+	else
 	end
 end)	
 
@@ -778,7 +791,8 @@ local function AutoBug()
 						local Elapsed = 0
 						isAutobugging = true
 						
-						
+						local maxMobsDied = 3
+						local mobsDied = 0
 						task.spawn(function()
 							local sucess,err = pcall(function()
 								for i, mob in next, workspace.Mobs:GetDescendants() do
@@ -788,12 +802,13 @@ local function AutoBug()
 										if (playerHumroot.Position - mobHumanoidRoot.Position).Magnitude <= 50 then
 											task.spawn(function()
 												while mob and mobHumanoid.Health >= 1 and task.wait() do
-													if 1 >= mobHumanoid.Health or not mob or not mobHumanoidRoot then
+													if 1 >= mobHumanoid.Health or not mob or not mobHumanoidRoot or mobsDied >= maxMobsDied then
 														SomeoneDeaded = true
 														task.spawn(function()
 															task.wait(2.5)
 															SomeoneDeaded = false
 														end)
+														mobsDied += 1
 														CoreGui:SetCore("SendNotification", {
 															Title = "MOB DIED";
 															Text = "MOB DIED";
@@ -832,7 +847,10 @@ local function AutoBug()
 								if SomeoneDeaded or Elapsed >= timeOut then
 									isHitting = false
 									isAutobugging = false
-									Cache.GodMod = false
+									task.spawn(function()
+										task.wait(2.5)
+										Cache.GodMod = false
+									end)
 									CoreGui:SetCore("SendNotification", {
 										Title = "THROW KOKETSU";
 										Text = "THROW KOKETSU";
