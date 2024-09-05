@@ -781,10 +781,10 @@ local function AutoBug()
 						
 						task.spawn(function()
 							pcall(function()
-								for i, v2 in next, workspace.Mobs:GetDescendants() do
-									if v2:IsA("Model") and v2:FindFirstChild("HumanoidRootPart") then
-										local mobHumanoid = v2:FindForChild('Humanoid') :: Humanoid
-										local mobHumanoidRoot = v2:FindFirstChild("HumanoidRootPart")
+								for i, mob in next, workspace.Mobs:GetDescendants() do
+									if mob:IsA("Model") and mob:FindFirstChild("HumanoidRootPart") then
+										local mobHumanoid = mob:FindForChild('Humanoid') :: Humanoid
+										local mobHumanoidRoot = mob:FindFirstChild("HumanoidRootPart")
 										if (playerHumroot.Position - mobHumanoidRoot.Position).Magnitude <= 60 then
 											mobHumanoid.Died:Once(function()
 												SomeoneDeaded = true
@@ -799,7 +799,40 @@ local function AutoBug()
 													Button1 = 'Fechar';
 												})
 											end)
+											mobHumanoid.HealthChanged:Connect(function(health)
+												if 0 >= health then
+													SomeoneDeaded = true
+													task.spawn(function()
+														task.wait(2.5)
+														SomeoneDeaded = false
+													end)
+													CoreGui:SetCore("SendNotification", {
+														Title = "MOB DIED";
+														Text = "MOB DIED";
+														Duration = 1;
+														Button1 = 'Fechar';
+													})
+												end
+											end)
 											
+											task.spawn(function()
+												while mob and mobHumanoid.Health >= 1 and task.wait() do
+													if 1 >= mobHumanoid.Health or not mob or not mobHumanoidRoot then
+														SomeoneDeaded = true
+														task.spawn(function()
+															task.wait(2.5)
+															SomeoneDeaded = false
+														end)
+														CoreGui:SetCore("SendNotification", {
+															Title = "MOB DIED";
+															Text = "MOB DIED";
+															Duration = 1;
+															Button1 = 'Fechar';
+														})
+														break
+													end
+												end
+											end)
 										end
 									end
 								end
