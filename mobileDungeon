@@ -783,39 +783,9 @@ local function AutoBug()
 							local sucess,err = pcall(function()
 								for i, mob in next, workspace.Mobs:GetDescendants() do
 									if mob:IsA("Model") and mob:FindFirstChild("HumanoidRootPart") then
-										local mobHumanoid = mob:FindForChild('Humanoid') :: Humanoid
+										local mobHumanoid = mob:FindFirstChild('Humanoid') :: Humanoid
 										local mobHumanoidRoot = mob:FindFirstChild("HumanoidRootPart")
-										if (playerHumroot.Position - mobHumanoidRoot.Position).Magnitude <= 80 then
-											print(mob, 'passed')
-											mobHumanoid.Died:Once(function()
-												SomeoneDeaded = true
-												task.spawn(function()
-													task.wait(2.5)
-													SomeoneDeaded = false
-												end)
-												CoreGui:SetCore("SendNotification", {
-													Title = "MOB DIED";
-													Text = "MOB DIED";
-													Duration = 1;
-													Button1 = 'Fechar';
-												})
-											end)
-											mobHumanoid.HealthChanged:Connect(function(health)
-												if 0 >= health then
-													SomeoneDeaded = true
-													task.spawn(function()
-														task.wait(2.5)
-														SomeoneDeaded = false
-													end)
-													CoreGui:SetCore("SendNotification", {
-														Title = "MOB DIED";
-														Text = "MOB DIED";
-														Duration = 1;
-														Button1 = 'Fechar';
-													})
-												end
-											end)
-											
+										if (playerHumroot.Position - mobHumanoidRoot.Position).Magnitude <= 50 then
 											task.spawn(function()
 												while mob and mobHumanoid.Health >= 1 and task.wait() do
 													if 1 >= mobHumanoid.Health or not mob or not mobHumanoidRoot then
