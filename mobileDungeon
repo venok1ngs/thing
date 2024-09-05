@@ -701,7 +701,10 @@ local function WeakenGKA2()
 
 							if hitCounter[modelId] < 2 then
 								local humanoid = v:FindFirstChildOfClass("Humanoid") :: Humanoid
-								local percent = math.random(5,25) / 100
+								if not humanoid:GetAttribute('percent') then
+									humanoid:SetAttribute('percent',math.random(5,25) / 100) 
+								end
+								local percent = humanoid:GetAttribute('percent') or 25
 								local npc_diference_health = humanoid.Health/humanoid.MaxHealth
 
 								if humanoid and humanoid.Health > 0 and npc_diference_health > percent then 
