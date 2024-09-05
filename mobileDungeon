@@ -786,6 +786,7 @@ local function AutoBug()
 										local mobHumanoid = mob:FindForChild('Humanoid') :: Humanoid
 										local mobHumanoidRoot = mob:FindFirstChild("HumanoidRootPart")
 										if (playerHumroot.Position - mobHumanoidRoot.Position).Magnitude <= 60 then
+											print(mob, 'passed')
 											mobHumanoid.Died:Once(function()
 												SomeoneDeaded = true
 												task.spawn(function()
