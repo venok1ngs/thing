@@ -23,11 +23,15 @@ local isTping = false
 local CoreGui = game:GetService("StarterGui")
 
 pcall(function()
-	for _,v in game.ReplicatedStorage:GetDescendants() do
+task.spawn(function()
+	while task.wait(5) do
+			for _,v in game.Workspace:GetDescendants() do
 		if v.Name == 'InvisibleWall' or v.Name == 'InvisibleWalls' then
 			v:Destroy()
 		end
 	end
+	end
+end)
 end)
 
 local Handle_Initiate_C = game.ReplicatedStorage.Remotes.To_Client.Handle_Initiate_C :: RemoteEvent
