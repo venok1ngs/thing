@@ -780,12 +780,12 @@ local function AutoBug()
 						
 						
 						task.spawn(function()
-							pcall(function()
+							local sucess,err = pcall(function()
 								for i, mob in next, workspace.Mobs:GetDescendants() do
 									if mob:IsA("Model") and mob:FindFirstChild("HumanoidRootPart") then
 										local mobHumanoid = mob:FindForChild('Humanoid') :: Humanoid
 										local mobHumanoidRoot = mob:FindFirstChild("HumanoidRootPart")
-										if (playerHumroot.Position - mobHumanoidRoot.Position).Magnitude <= 60 then
+										if (playerHumroot.Position - mobHumanoidRoot.Position).Magnitude <= 80 then
 											print(mob, 'passed')
 											mobHumanoid.Died:Once(function()
 												SomeoneDeaded = true
@@ -838,6 +838,9 @@ local function AutoBug()
 									end
 								end
 							end)
+							if not sucess then
+								warn('EITA PORRA DEU ERRO CARALHO' .. err)
+							end
 						end)
 						
 						task.spawn(function()
