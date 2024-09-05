@@ -23,7 +23,7 @@ local isTping = false
 local CoreGui = game:GetService("StarterGui")
 
 pcall(function()
-	for _,v in game.Workspace.Map:GetDescendants() do
+	for _,v in game:GetDescendants() do
 		if v.Name == 'InvisibleWall' or v.Name == 'InvisibleWalls' then
 			v:Destroy()
 		end
