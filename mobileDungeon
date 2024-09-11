@@ -4,7 +4,7 @@ pcall(function()
 		loadstring(game:HttpGet('https://pastebin.com/raw/B5DMhTNB'))()
 	end)
 end)
-local window = DrRayLibrary:Load("Mobile Dungeon", "Default")
+local window = DrRayLibrary:Load("Mobile Dungeon", "rbxassetid://5594451067")
 
 local Player = game:GetService("Players").LocalPlayer;
 local UIS = game:GetService('UserInputService');
@@ -455,8 +455,8 @@ Cache.GodMod = false
 Cache.AutoFarm = false
 
 local SavedThings = {
-	VelocityTween = 400;
-	WaitingTravel = 2;
+	VelocityTween = 180;
+	WaitingTravel = 3;
 }
 
 
@@ -978,7 +978,9 @@ local function startTravel()
 			local IndexRolled = 0
 			local RollCanGo = true
 			local IsRolling = false
-
+			
+			window.Text = 'Mobile Dugeon ' .. '| ' .. ChoosedMap.Name
+			
 			local function rollPoints()
 				if not Cache.AutoFarm then return end
 				for Index,Positions in Positions[ChoosedMap.Name] do
@@ -1038,12 +1040,12 @@ misc.newToggle('Npc To NPC Spawns','This will take you close to NPC spawns',fals
 	end
 end)
 
-misc.newInput("Tween Velocity", "The velocity for travel, Default: 400", function(text)
+misc.newInput("Tween Velocity", "The velocity for travel, Default: 200", function(text)
 	if text and text ~= '' and tonumber(text) then
 		SavedThings.VelocityTween = tostring(text)
 	end
 end)
-misc.newInput("Waiting Time", "The waiting time to travel, Default: 2", function(text)
+misc.newInput("Waiting Time", "The waiting time to travel, Default: 3", function(text)
 	if text and text ~= '' and tonumber(text) then
 		SavedThings.WaitingTravel = tostring(text)
 	end
@@ -1161,10 +1163,6 @@ tab1.newButton('Auto-Bug','Make sure you have M1 equipped.',function()
 		AutoBug()
 	end
 end)
-
-local AutoFarm = tab1.newToggle("Auto-Farm",'This will take you to spawns automatically.', false, function(toggleState)
-
-end, true)
 
 
 WeakenGKA('DisableToggles', 'Register your damage !!');
