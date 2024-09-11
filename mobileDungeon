@@ -824,7 +824,7 @@ local function AutoBug()
 						
 						task.spawn(function()
 							while task.wait(0.15) and canStanding do
-								playerHumroot.CFrame = npcCFrame * CFrame.new(0,30,0) * CFrame.Angles(math.rad(-90),0,0) 
+								playerHumroot.CFrame = npcCFrame * CFrame.new(0,15,0) * CFrame.Angles(math.rad(-90),0,0) 
 							end
 						end)
 						
