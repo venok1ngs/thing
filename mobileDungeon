@@ -23,11 +23,15 @@ local isTping = false
 local CoreGui = game:GetService("StarterGui")
 
 pcall(function()
-	for _,v in game.Workspace.Map:GetDescendants() do
-		if v.Name == 'InvisibleWall' or v.Name == 'InvisibleWalls' then
-			v:Destroy()
+	task.spawn(function()
+		while task.wait(5) do
+			for _,v in game.Workspace:GetDescendants() do
+				if v.Name == 'InvisibleWall' or v.Name == 'InvisibleWalls' then
+					v:Destroy()
+				end
+			end
 		end
-	end
+	end)
 end)
 
 local Handle_Initiate_C = game.ReplicatedStorage.Remotes.To_Client.Handle_Initiate_C :: RemoteEvent
@@ -721,7 +725,10 @@ local function WeakenGKA2()
 
 							if hitCounter[modelId] < 2 then
 								local humanoid = v:FindFirstChildOfClass("Humanoid") :: Humanoid
-								local percent = math.random(5,25) / 100
+								if not humanoid:GetAttribute('percent') then
+									humanoid:SetAttribute('percent',math.random(5,25) / 100) 
+								end
+								local percent = humanoid:GetAttribute('percent') or 25
 								local npc_diference_health = humanoid.Health/humanoid.MaxHealth
 
 								if humanoid and humanoid.Health > 0 and npc_diference_health > percent then 
@@ -817,7 +824,7 @@ local function AutoBug()
 						
 						task.spawn(function()
 							while task.wait(0.15) and canStanding do
-								playerHumroot = npcCFrame * CFrame.new(0,15,0) * CFrame.Angles(math.rad(-90),0,0) 
+								playerHumroot.CFrame = npcCFrame * CFrame.new(0,30,0) * CFrame.Angles(math.rad(-90),0,0) 
 							end
 						end)
 						
