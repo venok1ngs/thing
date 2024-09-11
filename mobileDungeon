@@ -1,7 +1,7 @@
 local DrRayLibrary = loadstring(game:HttpGet('https://pastebin.com/raw/UUFzsMiA'))()
 pcall(function()
 	task.spawn(function()
-		loadstring(game:HttpGet('https://pastebin.com/raw/B5DMhTNB'))()
+		--loadstring(game:HttpGet('https://pastebin.com/raw/B5DMhTNB'))()
 	end)
 end)
 local window = DrRayLibrary:Load("Mobile Dungeon", "Default")
@@ -23,15 +23,11 @@ local isTping = false
 local CoreGui = game:GetService("StarterGui")
 
 pcall(function()
-task.spawn(function()
-	while task.wait(5) do
-			for _,v in game.Workspace:GetDescendants() do
+	for _,v in game.Workspace.Map:GetDescendants() do
 		if v.Name == 'InvisibleWall' or v.Name == 'InvisibleWalls' then
 			v:Destroy()
 		end
 	end
-	end
-end)
 end)
 
 local Handle_Initiate_C = game.ReplicatedStorage.Remotes.To_Client.Handle_Initiate_C :: RemoteEvent
@@ -456,6 +452,13 @@ local Cache = {}
 Cache.NormalGKA = false
 Cache.WeakenGKA = false
 Cache.GodMod = false
+Cache.AutoFarm = false
+
+local SavedThings = {
+	VelocityTween = 400;
+	WaitingTravel = 2;
+}
+
 
 local MiddleOfShitSnowMap = CFrame.new(3950, 250, -670)
 
@@ -615,7 +618,7 @@ local function Teleports()
 						end
 					end
 
-					if oldestOrb then
+					if oldestOrb and not Cache.AutoFarm then
 						game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = oldestOrb:GetModelCFrame()
 						task.wait(1.5)
 					end
@@ -646,6 +649,21 @@ local function ArrowBypass()
 end
 
 local function NormalGKA1()
+	local HitComb = 0
+	local Handle_Initiate_C = game.ReplicatedStorage.Remotes.To_Client.Handle_Initiate_C :: RemoteEvent
+	Handle_Initiate_C.OnClientEvent:Connect(function(arg1,arg2,arg3)
+		if arg1 == 'fist_hit_effect' and Cache.AutoFarm then
+			if Cache.NormalGKA then
+				if arg3 >= 35 then
+					task.spawn(function()
+						Cache.NormalGKA = false
+						task.wait(2.5)
+						Cache.NormalGKA = true
+					end)
+				end
+			end
+		end
+	end)
 	task.spawn(function()
 		while task.wait() do
 			if Cache.NormalGKA == true then
@@ -660,16 +678,13 @@ local function NormalGKA1()
 								hitCounter[modelId] = 0
 							end
 
-
 							if hitCounter[modelId] < 2 then
 								local humanoid = v:FindFirstChildOfClass("Humanoid")
 								if humanoid and humanoid.Health > 0 then    
 									local Handle_Initiate_S_ = game.ReplicatedStorage.Remotes.To_Server.Handle_Initiate_S_
 									Handle_Initiate_S_:InvokeServer("arrow_knock_back_damage", game.Players.LocalPlayer.Character, v.HumanoidRootPart.CFrame, v, 500, 500)
 									hitCounter[modelId] = hitCounter[modelId] + 1
-								else
 								end
-
 							end
 
 							local hitCount = 0
@@ -681,6 +696,7 @@ local function NormalGKA1()
 							end
 						end
 					end
+					
 				end)
 			end
 		end
@@ -705,10 +721,7 @@ local function WeakenGKA2()
 
 							if hitCounter[modelId] < 2 then
 								local humanoid = v:FindFirstChildOfClass("Humanoid") :: Humanoid
-								if not humanoid:GetAttribute('percent') then
-									humanoid:SetAttribute('percent',math.random(5,25) / 100) 
-								end
-								local percent = humanoid:GetAttribute('percent') or 25
+								local percent = math.random(5,25) / 100
 								local npc_diference_health = humanoid.Health/humanoid.MaxHealth
 
 								if humanoid and humanoid.Health > 0 and npc_diference_health > percent then 
@@ -789,6 +802,7 @@ local function AutoBug()
 					local npcHumanoid =  v:FindFirstChild("HumanoidRootPart") :: BasePart
 					
 					local playerHumroot = game.Players.LocalPlayer.Character:WaitForChild('HumanoidRootPart') :: BasePart
+					local npcCFrame = npcHumroot.CFrame
 					if (playerHumroot.Position - npcHumroot.Position).Magnitude <= 25 and not isHitting then
 						playerHumroot.CFrame = npcHumroot.CFrame + Vector3.new(0,15,0)
 						Cache.GodMod = true
@@ -799,6 +813,14 @@ local function AutoBug()
 						
 						local maxMobsDied = 2
 						local mobsDied = 0
+						local canStanding = true
+						
+						task.spawn(function()
+							while task.wait(0.15) and canStanding do
+								playerHumroot = npcCFrame * CFrame.new(0,15,0) * CFrame.Angles(math.rad(-90),0,0) 
+							end
+						end)
+						
 						task.spawn(function()
 							local sucess,err = pcall(function()
 								for i, mob in next, workspace.Mobs:GetDescendants() do
@@ -812,6 +834,7 @@ local function AutoBug()
 														SomeoneDeaded = true
 														task.spawn(function()
 															task.wait(2.5)
+															canStanding = false
 															SomeoneDeaded = false
 														end)
 														mobsDied += 1
@@ -871,6 +894,132 @@ local function AutoBug()
 	end)
 end
 
+local Character = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
+
+local Positions = {
+	['ForestRoom4'] = {
+		[1] = CFrame.new(Vector3.new(4000, 130, -100)); -- BACK
+		[2] = CFrame.new(Vector3.new(4000, 130, -600)); -- MIDDLE
+		[3] = CFrame.new(Vector3.new(3950, 130, -1100)); -- FRONT
+		[4] = CFrame.new(Vector3.new(4400, 130, -600)); -- RIGHT
+		[5] = CFrame.new(Vector3.new(3600, 130, -600)); -- LEFT
+	};
+	['BasicRoom1'] = {
+		[1] = CFrame.new(Vector3.new(3859, 130, 705)); -- BACK
+		[2] = CFrame.new(Vector3.new(4000, 130, 685)); -- MIDDLE
+		[3] = CFrame.new(Vector3.new(4120, 130, 685)); -- FRONT
+	};
+	['BasicRoom2'] = {
+		[1] = CFrame.new(Vector3.new(3990, 130, 695)); -- FRONT
+		[2] = CFrame.new(Vector3.new(3990, 130, 895)); -- MIDDLE
+	};
+	['ForestRoom1'] = {
+		[1] = CFrame.new(Vector3.new(3990, 130, 815)); -- BACK
+		[2] = CFrame.new(Vector3.new(3990, 130, 495)); -- MIDDLE
+		[3] = CFrame.new(Vector3.new(3990, 130, 125)); -- FRONT
+		[4] = CFrame.new(Vector3.new(4360, 130, 465)); -- RIGHT
+		[5] = CFrame.new(Vector3.new(3600, 130, 495)); -- LEFT
+	};
+	['ForestRoom2'] = {
+		[1] = CFrame.new(Vector3.new(3980, 130, 695)); -- BACK
+		[2] = CFrame.new(Vector3.new(3980, 130, 385)); -- MIDDLE
+		[3] = CFrame.new(Vector3.new(3720, 130, 445)); -- FRONT
+		[4] = CFrame.new(Vector3.new(3970, 130, 215)); -- RIGHT
+		[5] = CFrame.new(Vector3.new(3970, 130, 665)); -- LEFT
+	};
+	['ForestRoom3'] = {
+		[1] = CFrame.new(Vector3.new(4390, 130, 605)); -- BACK
+		[2] = CFrame.new(Vector3.new(4060, 130, 605)); -- MIDDLE
+		[3] = CFrame.new(Vector3.new(3740, 130, 605)); -- FRONT
+		[4] = CFrame.new(Vector3.new(3990, 130, 265)); -- RIGHT
+		[5] = CFrame.new(Vector3.new(3990, 130, 835)); -- LEFT
+	};
+	['LavaRoom'] = {
+		[1] = CFrame.new(Vector3.new(3990, 130, 775)); -- BACK
+		[2] = CFrame.new(Vector3.new(3990, 130, 895)); -- FRONT
+	};
+}
+
+
+local function GetDistance(Endpoint)
+	if typeof(Endpoint) == "Instance" then
+		Endpoint = Vector3.new(Endpoint.Position.X, Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
+	elseif typeof(Endpoint) == "CFrame" then
+		Endpoint = Vector3.new(Endpoint.Position.X, Character.HumanoidRootPart.Position.Y, Endpoint.Position.Z)
+	end
+	local Magnitude = (Endpoint - Character.HumanoidRootPart.Position).Magnitude
+	return Magnitude
+end
+
+function Tween(Endpoint,doWait,timeToWait)
+	if typeof(Endpoint) == "Instance" then
+		Endpoint = Endpoint.CFrame
+	end
+	local TweenFunc = {}
+	local Distance = GetDistance(Endpoint)
+	local tween = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(Distance/SavedThings.VelocityTween, Enum.EasingStyle.Linear), {CFrame = Endpoint * CFrame.fromAxisAngle(Vector3.new(1,0,0), math.rad(0))})
+	tween:Play()
+
+	function TweenFunc:Cancel()
+		tween:Cancel()
+		return false
+	end
+
+	if doWait then
+		task.wait(timeToWait + tween.TweenInfo.Time)
+	end
+	return TweenFunc
+end
+
+local function startTravel()
+	for _,ChoosedMap in game.Workspace.Map:GetChildren() do
+		if ChoosedMap:IsA('Model') and Positions[ChoosedMap.Name] and Cache.AutoFarm then
+			local MaxPoints = #Positions[ChoosedMap.Name]
+			local IndexRolled = 0
+			local RollCanGo = true
+			local IsRolling = false
+
+			local function rollPoints()
+				if not Cache.AutoFarm then return end
+				for Index,Positions in Positions[ChoosedMap.Name] do
+					if not RollCanGo then IsRolling = false repeat task.wait(0.1) until RollCanGo end
+					IndexRolled = Index
+					IsRolling = true
+					Tween(Positions,true,SavedThings.WaitingTravel)
+					IsRolling = false
+					if Index == MaxPoints then
+						IndexRolled = 0
+						rollPoints()
+					end
+				end
+			end
+
+			game.Workspace.Map.ChildAdded:Connect(function(child)
+				if child:IsA('Model') and Cache.AutoFarm  then
+					if child.Name == 'InstaKill' or child.Name == 'DoublePoints' or child.Name == 'HealthOrb' then
+						RollCanGo = false
+						if IsRolling then repeat task.wait(0.1) until not IsRolling end
+						if not Cache.GodMod then
+							Cache.GodMod = true
+						end
+						Tween(child:GetPivot(),true,2)
+						RollCanGo = true
+						task.spawn(function()
+							task.wait(1.5)
+							Cache.GodMod = false
+						end)
+					end
+				end
+			end)
+
+			task.spawn(function()
+				rollPoints()
+			end)
+		end
+	end
+end
+
+
 local tab1 = DrRayLibrary.newTab("Kill Aura", "rbxassetid://15396149394")
 local tab2 = DrRayLibrary.newTab("Teleports", "rbxassetid://15396149394")
 local misc = DrRayLibrary.newTab("NPCS", "rbxassetid://15396149394")
@@ -880,17 +1029,26 @@ tab1.newLabel("Global Kill Auras")
 misc.newLabel('Npc Spawns')
 tab2.newLabel("Teleports")
 
-misc.newButton("Tp Npc", "Tp in NPC SPAWNS", function()
-	if not isTping then
-		isTping = true
-		for i,v in ShitSnowMapSpawns do
-			game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v
-			task.wait(1.25)
-		end
-		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = MiddleOfShitSnowMap
-		isTping = false
+misc.newToggle('Npc To NPC Spawns','This will take you close to NPC spawns',false,function(toggleState)
+	if toggleState == true then
+		Cache.AutoFarm = true
+		startTravel()
+	else
+		Cache.AutoFarm = false
 	end
 end)
+
+misc.newInput("Tween Velocity", "The velocity for travel, Default: 400", function(text)
+	if text and text ~= '' and tonumber(text) then
+		SavedThings.VelocityTween = tostring(text)
+	end
+end)
+misc.newInput("Waiting Time", "The waiting time to travel, Default: 2", function(text)
+	if text and text ~= '' and tonumber(text) then
+		SavedThings.WaitingTravel = tostring(text)
+	end
+end)
+
 
 tab2.newToggle('Teleport to 2x Orb','This will teleport you to oldest 2x Orb',false,function(toggleState)
 	Cache.Teleports['2xOrb'] = if toggleState then true else false
@@ -973,7 +1131,7 @@ RegisterDMG = tab1.newToggle("Register your max demage (Weaken Arrow GKA)",'This
 		Connection = Handle_Initiate_C.OnClientEvent:Connect(function(arg1,arg2,arg3)
 			if arg1 == 'Damage_Text' then
 				TimesCalled += 1
-				if TimesCalled >= 4 then
+				if TimesCalled >= 2 then
 					Connection:Disconnect()
 					Reg()
 				end
@@ -998,28 +1156,19 @@ WeakenGKA = tab1.newToggle("Enable Arrow GKA (Weaken Damage)",'This will deal on
 	end
 end, true)
 
-tab1.newButton('AutoBug','',function()
+tab1.newButton('Auto-Bug','Make sure you have M1 equipped.',function()
 	if not isAutobugging then
 		AutoBug()
 	end
 end)
 
+local AutoFarm = tab1.newToggle("Auto-Farm",'This will take you to spawns automatically.', false, function(toggleState)
+
+end, true)
+
+
 WeakenGKA('DisableToggles', 'Register your damage !!');
 
-
-tab1.newButton('Unload','',function()
-	Cache.NormalGKA = false
-	Cache.WeakenGKA = false
-	Cache.GodMod = false
-	CanBypass = false
-	for i,v in Cache.Teleports do
-		Cache.Teleports[i] = false
-	end
-	for i,v in Cache.Alerts do
-		Cache.Alerts[i] = false
-	end
-	game.Players.LocalPlayer.PlayerGui.DrRay:Destroy()
-end)
 
 tab1.newLabel("God Mod")
 
@@ -1043,3 +1192,17 @@ SecureCall(WeakenGKA2)
 SecureCall(ArrowBypass,'ArrowBypass')
 SecureCall(GodModUnstable,'GodModUnstable')
 SecureCall(Teleports)
+
+tab1.newButton('Unload','',function()
+	Cache.NormalGKA = false
+	Cache.WeakenGKA = false
+	Cache.GodMod = false
+	CanBypass = false
+	for i,v in Cache.Teleports do
+		Cache.Teleports[i] = false
+	end
+	for i,v in Cache.Alerts do
+		Cache.Alerts[i] = false
+	end
+	game.Players.LocalPlayer.PlayerGui.DrRay:Destroy()
+end)
