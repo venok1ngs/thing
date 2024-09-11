@@ -4,7 +4,7 @@ pcall(function()
 		loadstring(game:HttpGet('https://pastebin.com/raw/B5DMhTNB'))()
 	end)
 end)
-local window = DrRayLibrary:Load("Mobile Dungeon", "rbxassetid://5594451067")
+local window = DrRayLibrary:Load("Mobile Dungeon",'Default')
 
 local Player = game:GetService("Players").LocalPlayer;
 local UIS = game:GetService('UserInputService');
@@ -923,9 +923,9 @@ local Positions = {
 	['ForestRoom2'] = {
 		[1] = CFrame.new(Vector3.new(3980, 130, 695)); -- BACK
 		[2] = CFrame.new(Vector3.new(3980, 130, 385)); -- MIDDLE
-		[3] = CFrame.new(Vector3.new(3720, 130, 445)); -- FRONT
-		[4] = CFrame.new(Vector3.new(3970, 130, 215)); -- RIGHT
-		[5] = CFrame.new(Vector3.new(3970, 130, 665)); -- LEFT
+		[3] = CFrame.new(Vector3.new(3970, 130, 215)); -- FRONT
+		[4] = CFrame.new(Vector3.new(3720, 130, 445)); -- RIGHT
+		[5] = CFrame.new(Vector3.new(4270, 130, 423)); -- LEFT
 	};
 	['ForestRoom3'] = {
 		[1] = CFrame.new(Vector3.new(4390, 130, 605)); -- BACK
@@ -987,7 +987,9 @@ local function startTravel()
 					if not RollCanGo then IsRolling = false repeat task.wait(0.1) until RollCanGo end
 					IndexRolled = Index
 					IsRolling = true
+					if not Cache.AutoFarm then return end
 					Tween(Positions,true,SavedThings.WaitingTravel)
+					if not Cache.AutoFarm then return end
 					IsRolling = false
 					if Index == MaxPoints then
 						IndexRolled = 0
@@ -1022,9 +1024,9 @@ local function startTravel()
 end
 
 
-local tab1 = DrRayLibrary.newTab("Kill Aura", "rbxassetid://15396149394")
-local tab2 = DrRayLibrary.newTab("Teleports", "rbxassetid://15396149394")
-local misc = DrRayLibrary.newTab("NPCS", "rbxassetid://15396149394")
+local tab1 = DrRayLibrary.newTab("Kill Aura", "rbxassetid://5594451067")
+local tab2 = DrRayLibrary.newTab("Teleports", "rbxassetid://57669899")
+local misc = DrRayLibrary.newTab("NPCS", "rbxassetid://53926420")
 
 
 tab1.newLabel("Global Kill Auras")
