@@ -973,6 +973,13 @@ function Tween(Endpoint,doWait,timeToWait)
 	end
 
 	if doWait then
+		if Cache.NormalGKA == true then
+			Cache.NormalGKA = false
+			task.spawn(function()
+				task.wait(tween.TweenInfo.Time+1)
+				Cache.NormalGKA = true
+			end)
+		end
 		task.wait(timeToWait + tween.TweenInfo.Time)
 	end
 	return TweenFunc
