@@ -26,7 +26,7 @@ pcall(function()
 	task.spawn(function()
 		while task.wait(5) do
 			for _,v in game.Workspace:GetDescendants() do
-				if v.Name == 'InvisibleWall' or v.Name == 'InvisibleWalls' then
+				if v.Name == 'InvisibleWall' or v.Name == 'InvisibleWalls' or v.Name == 'Barrier' and v:IsA('Folder') then
 					v:Destroy()
 				end
 			end
