@@ -416,6 +416,8 @@ local function SellItems()
     if args[2] == 0 then
         return     
     end
+	 game:GetService("ReplicatedStorage").Sell_Items_tang:InvokeServer(unpack(args))
+
 end
 
 
